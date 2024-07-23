@@ -12,10 +12,16 @@ public class GameManager : MonoBehaviour
     private int score;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI gameOverText;
+    public TextMeshProUGUI livesText;
+    private int lives;
+
     private float spawnRate = 1.0f;
     public bool isGameActive;
     public Button restartButton;
     public GameObject titleScreen;
+
+    public GameObject pauseScreen;
+    private bool paused;
     void Start()
     {
        
@@ -25,7 +31,12 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //Check if the user has pressed the P key
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            ChangePaused();
+        }
+
     }
 
 
@@ -42,7 +53,7 @@ public class GameManager : MonoBehaviour
 
     public void UpdateScore(int scoreToAdd){
         score += scoreToAdd;
-        scoreText.text = "Score" +score;
+        scoreText.text = "Score: " +score;
     }
 
     public void GameOver(){
@@ -63,9 +74,37 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(SpawnTarget());
         UpdateScore(0);
-        
+        UpdateLives(3);
         titleScreen.gameObject.SetActive(false);
     }
 
+
     
+    public void UpdateLives(int livesToChange)
+    {
+        lives += livesToChange;
+        livesText.text = "Lives: " + lives;
+        if (lives <= 0)
+        {
+            GameOver();
+        }
+    }
+    
+
+    void ChangePaused()
+    {
+        if (!paused)
+        {
+            paused = true;
+            pauseScreen.SetActive(true);
+            Time.timeScale = 0;
+        }
+        else
+        {
+            paused = false;
+            pauseScreen.SetActive(false);
+            Time.timeScale = 1;
+        }
+    }
+
 }
